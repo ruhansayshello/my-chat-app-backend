@@ -34,5 +34,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
 # Expose port
 EXPOSE 8080
 
-# Start command
-CMD ["/app/start.sh"]
+# Change CMD from using start.sh to running directly:
+CMD ["/app/pocketbase", "serve", "--http=0.0.0.0:8080", "--dir", "/app/pb_data"]
