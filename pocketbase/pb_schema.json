@@ -1,0 +1,146 @@
+{
+  "collections": [
+    {
+      "name": "users",
+      "type": "auth",
+      "schema": [
+        {
+          "name": "username",
+          "type": "text",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "avatar",
+          "type": "file",
+          "required": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "options": ["online", "offline", "away"],
+          "default": "offline"
+        },
+        {
+          "name": "friends",
+          "type": "relation",
+          "collectionId": "users",
+          "required": false
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_users_username ON users (username)"
+      ]
+    },
+    {
+      "name": "chats",
+      "type": "base",
+      "schema": [
+        {
+          "name": "participants",
+          "type": "relation",
+          "collectionId": "users",
+          "required": true,
+          "options": {
+            "maxSelect": 10
+          }
+        },
+        {
+          "name": "last_message",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "last_message_at",
+          "type": "date",
+          "required": false
+        },
+        {
+          "name": "is_group",
+          "type": "bool",
+          "default": false
+        },
+        {
+          "name": "group_name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "group_avatar",
+          "type": "file",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "messages",
+      "type": "base",
+      "schema": [
+        {
+          "name": "chat",
+          "type": "relation",
+          "collectionId": "chats",
+          "required": true
+        },
+        {
+          "name": "sender",
+          "type": "relation",
+          "collectionId": "users",
+          "required": true
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "message_type",
+          "type": "select",
+          "options": ["text", "image", "video", "file", "audio", "call"],
+          "default": "text"
+        },
+        {
+          "name": "file",
+          "type": "file",
+          "required": false
+        },
+        {
+          "name": "file_name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "name": "file_size",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "call_duration",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "call_type",
+          "type": "select",
+          "options": ["voice", "video"],
+          "required": false
+        },
+        {
+          "name": "read_by",
+          "type": "relation",
+          "collectionId": "users",
+          "required": false
+        },
+        {
+          "name": "deleted",
+          "type": "bool",
+          "default": false
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_messages_chat ON messages (chat)",
+        "CREATE INDEX idx_messages_created ON messages (created)"
+      ]
+    }
+  ]
+}
